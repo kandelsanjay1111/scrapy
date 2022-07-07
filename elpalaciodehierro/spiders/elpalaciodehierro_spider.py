@@ -1,4 +1,5 @@
 import scrapy
+import datetime
 '''
  default_dict = {
                     'Date': datetime.now().strftime("%Y-%m-%d"),
@@ -28,13 +29,16 @@ import scrapy
                     }
 '''
 
-class ElpalaciodeSpider(scrapy.spiders.SitemapSpider):
+# scrapy.spiders.SitemapSpider
+class ElpalaciodeSpider(scrapy.Spider):
     name = 'elpalaciode'
-    sitemap_urls = ['https://www.elpalaciodehierro.com/sitemap_index.xml']
-    sitemap_rules = [(r'.html', 'parse')]
+    #sitemap_urls = ['https://www.elpalaciodehierro.com/sitemap_index.xml']
+    #sitemap_rules = [(r'.html', 'parse')]
+    start_urls = ['https://www.elpalaciodehierro.com/under-armour-tenis-para-correr-shadow-hombre-41726918.html']
 
     def parse(self, response):
         item = dict()
-        breakpoint()
-        item['Marca'] = response.css('h2[class=b-product_main_info-brand] a::text').get()
+        item['Marca'] = response.css('h2[class=b-product_main_info-brand] a::text').get().strip()
+        #item['Date'] = datetime.datetime.now().strftime("%Y-%m-%d")
+        #item['url'] = response.url
         yield item
