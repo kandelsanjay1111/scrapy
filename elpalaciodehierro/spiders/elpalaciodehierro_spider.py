@@ -49,14 +49,8 @@ class ElpalaciodeSpider(scrapy.Spider):
 
         item['Item']=response.css('h2[class=b-product_main_info-brand] a::text').get().strip()+","+response.css('h1.b-product_main_info-name::text').get().strip()
 
-        sku_text=response.css('div.b-product_description-keys > span.b-product_description-key:first-child::text').get()
-        sku=''
-        
-        for m in sku_text:
-            if m.isdigit():
-                sku=sku+m
 
-        item['SKU']=sku
+        item['SKU']=response.css('meta[itemprop=sku]::attr(content)').get()
 
         model_text=response.css('div.b-product_description-keys > span.b-product_description-key:last-child::text').get()
         model=""
