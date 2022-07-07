@@ -38,7 +38,43 @@ class ElpalaciodeSpider(scrapy.Spider):
 
     def parse(self, response):
         item = dict()
+
         item['Marca'] = response.css('h2[class=b-product_main_info-brand] a::text').get().strip()
+
+        item['Price']=response.css('div[class=b-product_price-old] div > span.b-product_price-value::text').get().strip()
+
+        item['Sale Price']=response.css('.b-product_price-sales.m-reduced > span.b-product_price-value::text').get().strip()
+
+        item['Sale Flag']=response.css('.b-product_product-discount::text').get().strip()
+
+        item['Item']=response.css('h2[class=b-product_main_info-brand] a::text').get().strip()+","+response.css('h1.b-product_main_info-name::text').get().strip()
+
+        sku_text=response.css('div.b-product_description-keys > span.b-product_description-key:first-child::text').get()
+        sku=''
+        
+        for m in sku_text:
+            if m.isdigit():
+                sku=sku+m
+
+        item['SKU']=sku
+
+        model_text=response.css('div.b-product_description-keys > span.b-product_description-key:last-child::text').get()
+        model=""
+        for m in model_text:
+            if m.isdigit():
+                model=model+m
+
+        item['Modelo']=model
+
+        item['Brand']=response.css('meta[itemprop=brand]::attr(content)').get()
+
+        item['Final Price']=min(item['Sale Price'],item['Price'])
+
+
+
+
+
         #item['Date'] = datetime.datetime.now().strftime("%Y-%m-%d")
         #item['url'] = response.url
         yield item
+# scrapy crawl elpalaciode -o elpalaciode.json
